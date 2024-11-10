@@ -130,16 +130,3 @@ class VectorRotation:
         """
         rotated_q = q.conjugate().multiply(self.vector_q).multiply(q)
         return [rotated_q.x, rotated_q.y, rotated_q.z]
-
-vector = [1, 0, 0]    
-vector_to_be_rotated = VectorRotation(vector[0], vector[1], vector[2])
-
-angle = 90
-rotation_q = Quaternion(cos(radians(angle) / 2), 0, sin(radians(angle) / 2), 0)
-rotation_q.display()
-
-rotated_vector_active = vector_to_be_rotated.active_rotation(rotation_q)
-print("Active Rotation Result:", rotated_vector_active)
-
-rotated_vector_passive = vector_to_be_rotated.passive_rotation(rotation_q)
-print("Passive Rotation Result:", rotated_vector_passive)

@@ -132,30 +132,3 @@ def spacetime_to_twistor(t, x, y, z) -> ProjectivePoint:
     pi_2 = ComplexNumber(0, 1) 
 
     return ProjectivePoint(omega_1, omega_2, pi_1, pi_2)
-
-point = spacetime_to_twistor(1, 2, 4, 5)
-
-point_a = ProjectivePoint(ComplexNumber(1, 0), ComplexNumber(2, 3), ComplexNumber(3, 1), ComplexNumber(4, -1))
-point_b = ProjectivePoint(ComplexNumber(0, 1), ComplexNumber(1, 0), ComplexNumber(-1, 2), ComplexNumber(3, 4))
-
-point_c = ProjectivePoint(ComplexNumber(1, -1), ComplexNumber(0, 2), ComplexNumber(1, 3), ComplexNumber(-2, 1))
-point_d = ProjectivePoint(ComplexNumber(2, 1), ComplexNumber(-1, 3), ComplexNumber(3, 1), ComplexNumber(0, 1))
-
-line1 = ProjectiveLine(point_a, point_b)
-line2 = ProjectiveLine(point_c, point_d)
-
-intersection_point = line1.intersect(line2)
-
-angle = 90  
-rotation_quat = Quaternion(cos(radians(angle) / 2), 0, sin(radians(angle) / 2), 0)
-
-point_a = ProjectivePoint(ComplexNumber(1, 0), ComplexNumber(2, 3), ComplexNumber(3, 1), ComplexNumber(4, -1))
-point_b = ProjectivePoint(ComplexNumber(0, 1), ComplexNumber(1, 0), ComplexNumber(-1, 2), ComplexNumber(3, 4))
-
-line = ProjectiveLine(point_a, point_b)
-
-line.rotate(rotation_quat)
-
-print("Rotated Line Points:")
-line.point_a.display()
-line.point_b.display()
