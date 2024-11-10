@@ -1,10 +1,11 @@
-from ProjectivePoint import ProjectiveLine, spacetime_to_twistor
-from Quaternion import Quaternion
+from TwistorClasses.TwistorMapping import spacetime_to_twistor
+from TwistorClasses.ProjectiveLine import ProjectiveLine
+from TwistorClasses.Quaternion import Quaternion
 from sympy import cos, sin
 from math import radians
 
-point1 = spacetime_to_twistor(1, 1, 1, 1) 
-point2 = spacetime_to_twistor(2, 2, 2, 2) 
+point1 = spacetime_to_twistor(1, 1, 1, 1)
+point2 = spacetime_to_twistor(2, 2, 2, 2)
 
 print("Twistor Point 1:")
 point1.display()
