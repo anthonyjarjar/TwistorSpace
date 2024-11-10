@@ -5,7 +5,7 @@ TwistorSpace applies twistor theory using complex numbers, quaternions, and proj
 
 - [x] **Complex and Quaternion Algebra**
 
-- [ ] **Projective Geometry**
+- [x] **Projective Geometry**
 
 - [ ] **Spacetime-to-Twistor Mapping**
 
