@@ -7,7 +7,18 @@ TwistorSpace applies twistor theory using complex numbers, quaternions, and proj
 
 - [x] **Projective Geometry**
 
-- [ ] **Spacetime-to-Twistor Mapping**
+- [x] **Spacetime-to-Twistor Mapping**
 
-- [ ] **Projection and Intersection Handling**
+- [x] **Projection and Intersection Handling**
 
+- [ ] **Mapping and Visualizing Spacetime Points in Twistor Space**
+
+- [ ] **Null Directions and Light Cones in Twistor Space**
+
+- [ ] **Conformal Rotations and Transformations**
+
+- [ ] **Intersection Handling and Line Relationships in Twistor Space**
+
+- [ ] **Rotational Symmetry in Twistor Space**
+
+- [ ] **Simulation of Simple Physical Interactions** 
