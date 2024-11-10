@@ -1,7 +1,7 @@
 class ComplexNumber:
     """This class represents a complex number with a real (rel) and imaginary (img) component.
-    
-    Functions include: 
+
+    Functions include:
         - add
         - subtract
         - multiply

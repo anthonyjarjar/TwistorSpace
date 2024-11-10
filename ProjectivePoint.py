@@ -1,7 +1,6 @@
-from sympy import cos, sin
-from math import radians
 from ComplexNumber import ComplexNumber
 from Quaternion import Quaternion
+from math import acos
 
 class ProjectivePoint:
     """Represents a point in projective space using homogeneous coordinates."""
@@ -37,6 +36,12 @@ class ProjectivePoint:
         self.y = ComplexNumber(self.y.rel * scale_factor, self.y.img * scale_factor)
         self.z = ComplexNumber(self.z.rel * scale_factor, self.z.img * scale_factor)
 
+    def normalize(self):
+        """Normalizes the projective point by scaling so that w is 1, if possible."""
+        if self.w.magnitude() != 0:
+            scale_factor = 1 / self.w.magnitude()
+            self.scale(scale_factor)
+
     def to_affine(self):
         """Converts the projective point to affine coordinates by dividing by w.
         
@@ -50,7 +55,52 @@ class ProjectivePoint:
             self.w = ComplexNumber(0, 0) 
         else:
             raise ValueError("Point at infinity; cannot convert to affine coordinates.")
+
+    def to_cartesian(self):
+        """Converts the projective point to Cartesian coordinates.
         
+        Returns:
+            tuple: A tuple of (x, y, z) in Cartesian coordinates.
+        
+        Raises:
+            ValueError: If the point is at infinity (w = 0).
+        """
+        if self.w.magnitude() != 0:
+            x = self.x.divide(self.w)
+            y = self.y.divide(self.w)
+            z = self.z.divide(self.w)
+            return (x, y, z)
+        else:
+            raise ValueError("Point is at infinity in projective space.")
+
+    def distance_to(self, other: "ProjectivePoint") -> float:
+        """Calculates a Euclidean-like distance between two projective points.
+        
+        Args:
+            other (ProjectivePoint): The other point to calculate the distance to.
+        
+        Returns:
+            float: The Euclidean-like distance between the two points.
+        """
+        dx = self.x.subtract(other.x).magnitude()
+        dy = self.y.subtract(other.y).magnitude()
+        dz = self.z.subtract(other.z).magnitude()
+        return (dx**2 + dy**2 + dz**2) ** 0.5
+
+    def angle_with(self, other: "ProjectivePoint") -> float:
+        """Calculates the angle between this projective point and another.
+        
+        Args:
+            other (ProjectivePoint): The other projective point to calculate the angle with.
+        
+        Returns:
+            float: The angle between the two projective points in radians.
+        """
+        dot_product = (self.x.rel * other.x.rel + self.y.rel * other.y.rel + self.z.rel * other.z.rel)
+        mag_self = (self.x.magnitude()**2 + self.y.magnitude()**2 + self.z.magnitude()**2) ** 0.5
+        mag_other = (other.x.magnitude()**2 + other.y.magnitude()**2 + other.z.magnitude()**2) ** 0.5
+        return acos(dot_product / (mag_self * mag_other))
+
     def rotate(self, quaternion: Quaternion):
         """Applies a quaternion-based rotation to the projective point.
         
@@ -77,6 +127,12 @@ class ProjectiveLine:
         self.point_a = point_a
         self.point_b = point_b
 
+    def display(self):
+        """Displays the components of the ProjectiveLine by showing the two points."""
+        print("Projective Line:")
+        self.point_a.display()
+        self.point_b.display()
+
     def cross_product(self, a: ProjectivePoint, b: ProjectivePoint) -> ProjectivePoint:
         """Calculates the cross product of two points to find the intersection line.
         
@@ -91,7 +147,6 @@ class ProjectiveLine:
         x = a.y.multiply(b.z).subtract(a.z.multiply(b.y))
         y = a.z.multiply(b.w).subtract(a.w.multiply(b.z))
         z = a.w.multiply(b.x).subtract(a.x.multiply(b.w))
-
         return ProjectivePoint(w, x, y, z)
 
     def intersect(self, other_line: "ProjectiveLine") -> ProjectivePoint:
@@ -105,6 +160,27 @@ class ProjectiveLine:
         """
         return self.cross_product(self.point_a, other_line.point_a)
     
+    def intersects(self, other_line: "ProjectiveLine") -> bool:
+        """Checks if two lines intersect in projective space.
+        
+        Args:
+            other_line (ProjectiveLine): The other line to check for intersection.
+        
+        Returns:
+            bool: True if the lines intersect, False otherwise.
+        """
+        intersection = self.intersect(other_line)
+        return not (intersection.w.magnitude() == 0 and intersection.x.magnitude() == 0 
+                    and intersection.y.magnitude() == 0 and intersection.z.magnitude() == 0)
+
+    def normalize(self):
+        """Normalizes the points defining the line, so each has w = 1 if possible."""
+        try:
+            self.point_a.normalize()
+            self.point_b.normalize()
+        except ValueError:
+            print("One of the points is at infinity; normalization skipped for that point.")
+
     def rotate(self, quaternion: Quaternion):
         """Applies a quaternion-based rotation to the entire line by rotating both endpoints.
         
@@ -113,6 +189,16 @@ class ProjectiveLine:
         """
         self.point_a.rotate(quaternion)
         self.point_b.rotate(quaternion)
+
+    def apply_transformation(self, transformation_matrix):
+        """Applies a projective transformation to both points defining the line.
+        
+        Args:
+            transformation_matrix (list): A 4x4 transformation matrix to apply to each point.
+        """
+        self.point_a = self.point_a.apply_transformation(transformation_matrix)
+        self.point_b = self.point_b.apply_transformation(transformation_matrix)
+
 
 def spacetime_to_twistor(t, x, y, z) -> ProjectivePoint:
     """Maps a spacetime point (t, x, y, z) to a twistor space ProjectivePoint.
@@ -132,3 +218,24 @@ def spacetime_to_twistor(t, x, y, z) -> ProjectivePoint:
     pi_2 = ComplexNumber(0, 1) 
 
     return ProjectivePoint(omega_1, omega_2, pi_1, pi_2)
+
+def spacetime_null_direction_to_twistor(t, x, y, z) -> ProjectivePoint:
+    """Converts a null direction in spacetime to a twistor point.
+    
+    Args:
+        t (float): The time component of the spacetime point.
+        x (float): The x-coordinate in space.
+        y (float): The y-coordinate in space.
+        z (float): The z-coordinate in space.
+    
+    Returns:
+        ProjectivePoint: A twistor point in projective space representing the null direction.
+    """
+    
+    omega_1 = ComplexNumber(x, y)
+    omega_2 = ComplexNumber(t + z, 0)
+    pi_1 = ComplexNumber(1, 0)  
+    pi_2 = ComplexNumber(0, 1) 
+
+    return ProjectivePoint(omega_1, omega_2, pi_1, pi_2)
+
