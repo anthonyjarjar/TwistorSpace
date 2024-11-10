@@ -12,21 +12,19 @@ class ComplexNumber:
         print(f"The real component is {self.rel}")
         print(f"The imaginary component is {self.img}i")
 
-    def add(self, other: "ComplexNumber"):
-        """Adds two complex numbers."""
+    def add(self, other: "ComplexNumber") -> "ComplexNumber":
+        """Adds two complex numbers and returns a new ComplexNumber instance."""
 
-        self.rel = self.rel + other.rel
-        self.img = self.img + other.img
+        return ComplexNumber(self.rel + other.rel, self.img + other.img)
 
-    def subtract(self, other: "ComplexNumber"):
-        """Subtracts two complex numbers."""
-
-        self.rel = self.rel - other.rel
-        self.img = self.img - other.img
+    def subtract(self, other: "ComplexNumber") -> "ComplexNumber":
+        """Subtracts two complex numbers and returns a new ComplexNumber instance."""
+        
+        return ComplexNumber(self.rel - other.rel, self.img - other.img)
 
     def multiply(self, other: "ComplexNumber") -> "ComplexNumber":
         """Multiplies two complex numbers."""
-
+        
         rel_part = self.rel * other.rel - self.img * other.img
         img_part = self.rel * other.img + self.img * other.rel
         return ComplexNumber(rel_part, img_part)
