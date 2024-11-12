@@ -48,7 +48,7 @@ class ProjectiveLine:
         """
         return self.cross_product(self.point_a, other_line.point_a)
     
-    def intersects(self, other_line: "ProjectiveLine") -> bool:
+    def intersect_bool(self, other_line: "ProjectiveLine") -> bool:
         """Checks if two lines intersect in projective space.
         
         Args:
