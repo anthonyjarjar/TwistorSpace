@@ -22,8 +22,12 @@ class ComplexNumber:
 
     def display(self):
         """Displays the real and imaginary components of the complex number."""
-        print(f"The real component is {self.rel}")
-        print(f"The imaginary component is {self.img}i")
+        print(f"The real component is {self.rel:.2f}")
+        print(f"The imaginary component is {self.img:.2f}i")
+    
+    def __str__(self):
+        """String representation for easier control over formatting in display methods."""
+        return f"({self.rel:.2f} + {self.img:.2f}i)"
 
     def add(self, other: "ComplexNumber") -> "ComplexNumber":
         """Adds two complex numbers and returns a new ComplexNumber instance.

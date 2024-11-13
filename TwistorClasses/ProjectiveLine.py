@@ -12,25 +12,35 @@ class ProjectiveLine:
             point_a (ProjectivePoint): The first point defining the line.
             point_b (ProjectivePoint): The second point defining the line.
         """
+        if not isinstance(point_a, ProjectivePoint) or not isinstance(point_b, ProjectivePoint):
+            raise TypeError("Both endpoints must be instances of ProjectivePoint")
+        
         self.point_a = point_a
         self.point_b = point_b
 
     def display(self):
         """Displays the components of the ProjectiveLine by showing the two points."""
         print("Projective Line:")
+        print("Point A:")
         self.point_a.display()
+        print("Point B:")
         self.point_b.display()
 
-    def cross_product(self, a: ProjectivePoint, b: ProjectivePoint) -> ProjectivePoint:
+    def cross_product(self, a: ProjectivePoint = None, b: ProjectivePoint = None) -> ProjectivePoint:
         """Calculates the cross product of two points to find the intersection line.
         
         Args:
-            a (ProjectivePoint): The first projective point.
-            b (ProjectivePoint): The second projective point.
+            a (ProjectivePoint): The first projective point. Defaults to point_a.
+            b (ProjectivePoint): The second projective point. Defaults to point_b.
         
         Returns:
             ProjectivePoint: The resulting projective point from the cross product.
         """
+        if a is None:
+            a = self.point_a
+        if b is None:
+            b = self.point_b
+        
         w = a.x.multiply(b.y).subtract(a.y.multiply(b.x))
         x = a.y.multiply(b.z).subtract(a.z.multiply(b.y))
         y = a.z.multiply(b.w).subtract(a.w.multiply(b.z))
@@ -58,8 +68,9 @@ class ProjectiveLine:
             bool: True if the lines intersect, False otherwise.
         """
         intersection = self.intersect(other_line)
-        return not (intersection.w.magnitude() == 0 and intersection.x.magnitude() == 0 
-                    and intersection.y.magnitude() == 0 and intersection.z.magnitude() == 0)
+        tolerance = 1e-10
+        return not (abs(intersection.w.magnitude()) < tolerance and abs(intersection.x.magnitude()) < tolerance 
+                    and abs(intersection.y.magnitude()) < tolerance and abs(intersection.z.magnitude()) < tolerance)
 
     def normalize(self):
         """Normalizes the points defining the line, so each has w = 1 if possible."""
@@ -83,6 +94,12 @@ class ProjectiveLine:
         
         Args:
             transformation_matrix (list): A 4x4 transformation matrix to apply to each point.
+        
+        Raises:
+            ValueError: If transformation_matrix is not a valid 4x4 matrix.
         """
+        if len(transformation_matrix) != 4 or any(len(row) != 4 for row in transformation_matrix):
+            raise ValueError("Transformation matrix must be 4x4")
+        
         self.point_a = self.point_a.apply_transformation(transformation_matrix)
         self.point_b = self.point_b.apply_transformation(transformation_matrix)
