@@ -57,12 +57,3 @@ def twistor_mapping(minkowski_point: ComplexMinkowskiPoint, lambda_spinor: Spino
     mu_spinor = Spinor(mu_components[0], mu_components[1])
     
     return Twistor(mu=mu_spinor, lambda_=lambda_spinor)
-
-minkowski_point = ComplexMinkowskiPoint(t=1, x=3, y=5, z=6)
-minkowski_point.display()
-
-lambda_spinor = Spinor(ComplexNumber(1, 0), ComplexNumber(0, 0))
-lambda_spinor.display()
-
-twistor = twistor_mapping(minkowski_point, lambda_spinor)
-twistor.display()
