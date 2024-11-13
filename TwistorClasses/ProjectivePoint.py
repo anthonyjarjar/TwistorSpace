@@ -33,10 +33,10 @@ class ProjectivePoint:
         Args:
             scale_factor (float): The factor by which to scale the point.
         """
-        self.w = ComplexNumber(self.w.rel * scale_factor, self.w.img * scale_factor)
-        self.x = ComplexNumber(self.x.rel * scale_factor, self.x.img * scale_factor)
-        self.y = ComplexNumber(self.y.rel * scale_factor, self.y.img * scale_factor)
-        self.z = ComplexNumber(self.z.rel * scale_factor, self.z.img * scale_factor)
+        self.w *= scale_factor
+        self.x *= scale_factor
+        self.y *= scale_factor
+        self.z *= scale_factor
 
     def normalize(self):
         """
@@ -65,9 +65,9 @@ class ProjectivePoint:
         if self.w.magnitude() != 0:
             return ProjectivePoint(
                 ComplexNumber(1, 0),
-                self.x.divide(self.w),
-                self.y.divide(self.w),
-                self.z.divide(self.w)
+                self.x / self.w,
+                self.y / self.w,
+                self.z / self.w
             )
         else:
             raise ValueError("Point at infinity; cannot convert to affine coordinates.")
@@ -83,9 +83,9 @@ class ProjectivePoint:
             ValueError: If the point is at infinity (w = 0).
         """
         if self.w.magnitude() != 0:
-            x = self.x.divide(self.w)
-            y = self.y.divide(self.w)
-            z = self.z.divide(self.w)
+            x = self.x / self.w
+            y = self.y / self.w
+            z = self.z / self.w
             return (x, y, z)
         else:
             raise ValueError("Point is at infinity in projective space.")
@@ -100,9 +100,9 @@ class ProjectivePoint:
         Returns:
             float: The Euclidean-like distance between the two points.
         """
-        dx = self.x.subtract(other.x).magnitude()
-        dy = self.y.subtract(other.y).magnitude()
-        dz = self.z.subtract(other.z).magnitude()
+        dx = (self.x - other.x).magnitude()
+        dy = (self.y - other.y).magnitude()
+        dz = (self.z - other.z).magnitude()
         return (dx**2 + dy**2 + dz**2) ** 0.5
 
     def angle_with(self, other: "ProjectivePoint") -> float:
@@ -137,7 +137,7 @@ class ProjectivePoint:
             ProjectivePoint: The rotated ProjectivePoint (if in_place is False).
         """
         point_quat = Quaternion(0, self.x.rel, self.y.rel, self.z.rel)
-        rotated_quat = quaternion.multiply(point_quat).multiply(quaternion.inverse())
+        rotated_quat = quaternion * point_quat * quaternion.inverse()
         rotated_point = ProjectivePoint(
             self.w, ComplexNumber(rotated_quat.x, 0), ComplexNumber(rotated_quat.y, 0), ComplexNumber(rotated_quat.z, 0)
         )

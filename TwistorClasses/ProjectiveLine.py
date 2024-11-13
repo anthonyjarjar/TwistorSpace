@@ -40,11 +40,11 @@ class ProjectiveLine:
             a = self.point_a
         if b is None:
             b = self.point_b
-        
-        w = a.x.multiply(b.y).subtract(a.y.multiply(b.x))
-        x = a.y.multiply(b.z).subtract(a.z.multiply(b.y))
-        y = a.z.multiply(b.w).subtract(a.w.multiply(b.z))
-        z = a.w.multiply(b.x).subtract(a.x.multiply(b.w))
+
+        w = a.x * b.y - a.y * b.x
+        x = a.y * b.z - a.z * b.y
+        y = a.z * b.w - a.w * b.z
+        z = a.w * b.x - a.x * b.w
         return ProjectivePoint(w, x, y, z)
 
     def intersect(self, other_line: "ProjectiveLine") -> ProjectivePoint:

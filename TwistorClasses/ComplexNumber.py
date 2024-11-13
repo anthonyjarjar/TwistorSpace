@@ -29,40 +29,58 @@ class ComplexNumber:
         """String representation for easier control over formatting in display methods."""
         return f"({self.rel:.2f} + {self.img:.2f}i)"
 
-    def add(self, other: "ComplexNumber") -> "ComplexNumber":
-        """Adds two complex numbers and returns a new ComplexNumber instance.
-        
-        Args:
-            other (ComplexNumber): The complex number to add.
-        
-        Returns:
-            ComplexNumber: The result of the addition.
-        """
-        return ComplexNumber(self.rel + other.rel, self.img + other.img)
+    # Operator overload for addition
+    def __add__(self, other):
+        """Allows the use of the + operator with ComplexNumber instances."""
+        if isinstance(other, ComplexNumber):
+            return ComplexNumber(self.rel + other.rel, self.img + other.img)
+        elif isinstance(other, (int, float)):
+            return ComplexNumber(self.rel + other, self.img)
+        else:
+            raise TypeError("Unsupported operand type for +")
 
-    def subtract(self, other: "ComplexNumber") -> "ComplexNumber":
-        """Subtracts two complex numbers and returns a new ComplexNumber instance.
-        
-        Args:
-            other (ComplexNumber): The complex number to subtract.
-        
-        Returns:
-            ComplexNumber: The result of the subtraction.
-        """
-        return ComplexNumber(self.rel - other.rel, self.img - other.img)
+    # Operator overload for subtraction
+    def __sub__(self, other):
+        """Allows the use of the - operator with ComplexNumber instances."""
+        if isinstance(other, ComplexNumber):
+            return ComplexNumber(self.rel - other.rel, self.img - other.img)
+        elif isinstance(other, (int, float)):
+            return ComplexNumber(self.rel - other, self.img)
+        else:
+            raise TypeError("Unsupported operand type for -")
 
-    def multiply(self, other: "ComplexNumber") -> "ComplexNumber":
-        """Multiplies two complex numbers.
+    # Operator overload for multiplication
+    def __mul__(self, other):
+        """Allows the use of the * operator with ComplexNumber instances."""
+        if isinstance(other, ComplexNumber):
+            rel_part = self.rel * other.rel - self.img * other.img
+            img_part = self.rel * other.img + self.img * other.rel
+            return ComplexNumber(rel_part, img_part)
+        elif isinstance(other, (int, float)):
+            return ComplexNumber(self.rel * other, self.img * other)
+        else:
+            raise TypeError("Unsupported operand type for *")
+
+    # Operator overload for true division
+    def __truediv__(self, other):
+        """Allows the use of the / operator with ComplexNumber instances."""
+        if isinstance(other, ComplexNumber):
+            other_star = other.conjugate()
+            other_magnitude_squared = other.magnitude() ** 2
+            numerator = self * other_star
+            
+            rel_part = numerator.rel / other_magnitude_squared
+            img_part = numerator.img / other_magnitude_squared
+            
+            return ComplexNumber(rel_part, img_part)
+        elif isinstance(other, (int, float)):
+            return ComplexNumber(self.rel / other, self.img / other)
+        else:
+            raise TypeError("Unsupported operand type for /")
         
-        Args:
-            other (ComplexNumber): The complex number to multiply by.
-        
-        Returns:
-            ComplexNumber: The result of the multiplication.
-        """
-        rel_part = self.rel * other.rel - self.img * other.img
-        img_part = self.rel * other.img + self.img * other.rel
-        return ComplexNumber(rel_part, img_part)
+    def __neg__(self):
+        """Allows the use of the unary - operator with ComplexNumber instances."""
+        return ComplexNumber(-self.rel, -self.img)
 
     def magnitude(self) -> float:
         """Calculates the magnitude of the complex number.
@@ -80,20 +98,3 @@ class ComplexNumber:
         """
         return ComplexNumber(self.rel, -self.img)
 
-    def divide(self, other: "ComplexNumber") -> "ComplexNumber":
-        """Divides the complex number by another complex number.
-        
-        Args:
-            other (ComplexNumber): The complex number to divide by.
-        
-        Returns:
-            ComplexNumber: The result of the division.
-        """
-        other_star = other.conjugate()
-        other_magnitude_squared = other.magnitude() ** 2
-        numerator = self.multiply(other_star)
-        
-        rel_part = numerator.rel / other_magnitude_squared
-        img_part = numerator.img / other_magnitude_squared
-        
-        return ComplexNumber(rel_part, img_part)

@@ -47,11 +47,11 @@ def twistor_mapping(minkowski_point: ComplexMinkowskiPoint, lambda_spinor: Spino
         Twistor: The twistor corresponding to the point.
     """
     mu_components = [
-        minkowski_point.matrix[0][0].multiply(lambda_spinor.components[0])
-        .add(minkowski_point.matrix[0][1].multiply(lambda_spinor.components[1])),
+        minkowski_point.matrix[0][0] * lambda_spinor.components[0] +
+        minkowski_point.matrix[0][1] * lambda_spinor.components[1],
         
-        minkowski_point.matrix[1][0].multiply(lambda_spinor.components[0])
-        .add(minkowski_point.matrix[1][1].multiply(lambda_spinor.components[1]))
+        minkowski_point.matrix[1][0] * lambda_spinor.components[0] +
+        minkowski_point.matrix[1][1] * lambda_spinor.components[1]
     ]
     
     mu_spinor = Spinor(mu_components[0], mu_components[1])
