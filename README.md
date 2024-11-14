@@ -9,7 +9,7 @@ TwistorSpace applies twistor theory using complex numbers, quaternions, and proj
 
 - [x] **Projection and Intersection Handling**
 
-- [] **Spacetime-to-Twistor Mapping**
+- [ ] **Spacetime-to-Twistor Mapping**
 
 - [ ] **Mapping and Visualizing Spacetime Points in Twistor Space**
 
